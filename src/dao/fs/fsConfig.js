@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from 'fs';
 
 class FSConfig {
   constructor(path) {
@@ -17,20 +17,20 @@ class FSConfig {
     try {
       await fs.promises.writeFile(this.path, this.toJSON(list), "utf-8");
     } catch (error) {
-      console.log("file not found");
+      return null;
     }
   }
 
   async read() {
-    if (fs.existsSync(this.path)) {
-      try {
-        const list = await fs.promises.readFile(this.path, "utf-8");
-        return this.toArray(list);
-      } catch (error) {
-        return null;
-      }
-    } else {
-      null;
+    if (!fs.existsSync(this.path)) {
+      return null;
+    }
+
+    try {
+      const list = await fs.promises.readFile(this.path, "utf-8");
+      return this.toArray(list);
+    } catch (error) {
+      return null;
     }
   }
 }

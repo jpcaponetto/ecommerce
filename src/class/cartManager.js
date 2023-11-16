@@ -1,5 +1,5 @@
-import Cart from "./cart.js";
-import FSConfig from "../dao/fs/fsConfig.js";
+import Cart from './cart.js';
+import FSConfig from '../dao/fs/fsConfig.js';
 
 const fsConfig = new FSConfig("./carts.json");
 
@@ -43,21 +43,12 @@ class CartManager {
     }
   }
 
-  async addProduct() {
-    this.carts = await fsConfig.read();
-    const cart = this.carts.find((cart) => cart.id === id);
-    if (cart) {
-      return cart;
-    }
-  }
-
   async addProductCart(cid, pid) {
     const cart = await this.productsCart(cid);
-
     if (cart) {
-      const fid = cart.products.find((product) => product.pid === pid);
-      if (fid) {
-        fid.quantity++;
+      const findId = cart.products.find((product) => product.pid === pid);
+      if (findId) {
+        findId.quantity++;
       } else {
         const product = {
           pid,
@@ -66,6 +57,9 @@ class CartManager {
         cart.products.push(product);
       }
       await fsConfig.write(this.carts);
+      return 1;
+    } else {
+      return 0;
     }
   }
 }

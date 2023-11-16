@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const MONGO_URI = `mongodb+srv://jpcaponetto:Z9o1mXfMAn74YrAd@cluster0.pdigbzn.mongodb.net/ecommerce?retryWrites=true&w=majority`;
+const MONGO_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.PASSWORD_MONGO}@cluster0.pdigbzn.mongodb.net/ecommerce?retryWrites=true&w=majority`;
 
 export const initMongoDB = async () => {
   try {

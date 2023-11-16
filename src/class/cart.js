@@ -1,8 +1,8 @@
-import { v4 as uuid } from "uuid";
-
+import { v4 as uuid } from 'uuid';
 class Cart {
   constructor() {
-    (this.id = uuid()), (this.products = []);
+    this.id = uuid();
+    this.products = [];
   }
 }
 

@@ -1,9 +1,9 @@
-import Product from "./product.js";
-import FSConfig from "../dao/fs/fsConfig.js";
+import FSConfig from '../dao/fs/fsConfig.js';
+import Product from './product.js';
 
 const fsConfig = new FSConfig("./products.json");
 
-class ProductManager {
+class ProductMaganer {
   constructor() {
     this.products = [];
   }
@@ -14,30 +14,30 @@ class ProductManager {
       return true;
     }
   }
-  async getId(id) {
+
+  async getIdx(id) {
     this.products = await fsConfig.read();
-    const idIndex = this.products.findIndex((product) => product.id === id);
-    return idIndex;
+    const idx = this.products.findIndex((product) => product.id === id);
+    return idx;
   }
 
   async getProducts() {
     this.products = await fsConfig.read();
+
     if (this.products) {
       return this.products;
     } else {
       return null;
     }
   }
+
   async getProductsById(id) {
     this.products = await fsConfig.read();
     const product = this.products.find((product) => product.id === id);
     if (product) {
       return product;
     } else {
-      return {
-        msg: "Product not found",
-        status: 404,
-      };
+      return null;
     }
   }
 
@@ -50,12 +50,12 @@ class ProductManager {
       code,
       category,
       description,
-      stock,
-      price
+      parseInt(stock),
+      parseInt(price)
     );
 
     if (!this.checkCode(code)) {
-      this.products.push(product);
+      this.products.unshift(product);
       await fsConfig.write(this.products);
       return product;
     } else {
@@ -64,10 +64,10 @@ class ProductManager {
   }
 
   async update(id, body) {
-    this.products = await fsConfig.read(); // leer lista de prodc
-    const idIndex = await this.getId(id); //
-    const clonProduct = this.product[idIndex];
-    if (idIndex === -1) {
+    this.products = await fsConfig.read();
+    const idx = await this.getIdx(id);
+    const clonProduct = this.products[idx];
+    if (idx === -1) {
       return null;
     }
     const product = {
@@ -75,23 +75,22 @@ class ProductManager {
       ...clonProduct,
       ...body,
     };
-    this.products[idIndex] = product;
+
+    this.products[idx] = product;
     await fsConfig.write(this.products);
     return product;
   }
 
   async delete(id) {
-    this.products = await fsConfig.read();
-    const idIndex = await this.getId(id);
-
-    if (idIndex === -1) {
+    const idx = await this.getIdx(id);
+    if (idx === -1) {
       return null;
     } else {
-      this.products.splice(idIndex, 1);
+      this.products.splice(idx, 1);
       await fsConfig.write(this.products);
       return 1;
     }
   }
 }
 
-export default ProductManager;
+export default ProductMaganer;

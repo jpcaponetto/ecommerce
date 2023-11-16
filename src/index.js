@@ -1,10 +1,13 @@
 import express from "express";
-import path from "path";
 import { engine } from "express-handlebars";
+import path from "path";
 import { __dirname } from "./utils.js";
+
 import productsRouter from "./routes/products.routes.js";
 import cartsRouter from "./routes/carts.routes.js";
+
 import socketProductRouter from "./routes/product.socket.routes.js";
+import chatRouter from "./routes/chat.routes.js";
 
 const app = express();
 
@@ -18,11 +21,11 @@ app.set("view engine", "handlebars");
 
 app.use("/api", productsRouter, cartsRouter);
 
-app.use("/", socketProductRouter);
+app.use("/", socketProductRouter, chatRouter);
 
 app.get("/", async (req, res) => {
-  const products = await productManager.getProducts();
-  res.render("home", { products });
+  // const products = await productManager.getProducts();
+  //res.render("home", {products});
 });
 
 export default app;
