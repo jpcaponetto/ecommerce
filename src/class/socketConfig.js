@@ -13,6 +13,8 @@ const init = (httpSever) => {
   io = new Server(httpSever);
 
   io.on("connection", async (socketClient) => {
+    const messages = await messageSchema.find({});
+    io.emit("get-messages", messages);
     console.log(`New client connected ${socketClient.id}`);
     const products = await productSchema.find({}).sort({ createdAt: -1 });
     io.emit("get-products", products);
