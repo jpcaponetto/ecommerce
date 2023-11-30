@@ -1,6 +1,7 @@
-let idCart = "";
+let idCart;
+let quantity;
 
-const getCartId = () => {
+const getCartId = async () => {
   Swal.fire({
     title: "Ingresar el id del cart",
     input: "text",
@@ -15,27 +16,45 @@ const getCartId = () => {
       idCart = result.value.trim();
     })
     .catch((error) => {
-      console.error("Enviar el id del carrito", error.message);
+      console.error("Error", error.message);
+    });
+};
+
+const getQuantity = async () => {
+  Swal.fire({
+    title: "Enter quantity",
+    input: "text",
+    allowOutsideClick: false,
+    inputValidator: (value) => {
+      if (!value) {
+        return "Error";
+      }
+    },
+  })
+    .then((result) => {
+      quantity = parseInt(result.value.trim());
+    })
+    .catch((error) => {
+      console.error("Error", error.message);
     });
 };
 
 getCartId();
 
-const formProduct = document.getElementById("formProduct");
+const addToCart = async (pid) => {
+  quantity = prompt("Enter quantity");
 
-formProduct.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  const quantity = parseInt(formProduct.quantity.value);
-  const idProduct = formProduct.idProduct.value;
-
-  fetch(`/api/carts/${idCart}/${idProduct}`, {
+  fetch(`/api/carts/${idCart}/${pid}`, {
     method: "POST",
-    body: JSON.stringify({ quantity: quantity }),
+    body: JSON.stringify({ quantity: parseInt(quantity) }),
     headers: {
       "Content-Type": "application/json",
     },
-  });
-
-  formProduct.quantity.value = "";
-});
+  })
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
