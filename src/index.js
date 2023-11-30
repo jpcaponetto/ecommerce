@@ -8,6 +8,7 @@ import cartsRouter from "./routes/carts.routes.js";
 
 import socketProductRouter from "./routes/product.socket.routes.js";
 import chatRouter from "./routes/chat.routes.js";
+import productsViewRouter from "./routes/views/products.render.routes.js";
 
 const app = express();
 
@@ -20,12 +21,11 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "handlebars");
 
 app.use("/api", productsRouter, cartsRouter);
+app.use("/", socketProductRouter, chatRouter, productsViewRouter);
 
-app.use("/", socketProductRouter, chatRouter);
-
-app.get("/", async (req, res) => {
-  // const products = await productManager.getProducts();
-  //res.render("home", {products});
-});
+// app.get("/", async (req, res) => {
+//   // const products = await productManager.getProducts();
+//   //res.render("home", {products});
+// });
 
 export default app;

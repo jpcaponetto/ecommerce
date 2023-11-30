@@ -11,10 +11,14 @@ export const createProductAdapter = async (product) => {
       return;
     }
   }
-
   const productManager = new ProductManager();
   productManager.create(product);
   console.log("created");
+};
+
+export const test = async (queryCriteria, options) => {
+  const out = await productSchema.paginate(queryCriteria, options);
+  return out;
 };
 
 export const getProductByIdAdapter = async (id) => {

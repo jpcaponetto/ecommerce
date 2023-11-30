@@ -6,8 +6,10 @@ import {
   deleteProductAdapter,
   getProductByIdAdapter,
   getProductsAdapter,
+  test,
   updateProductAdapter,
 } from "../dao/productAdapter.js";
+import { paginateResponseSuccess } from "../class/response.js";
 
 const productManager = new ProductMaganer();
 
@@ -26,10 +28,29 @@ productsRouter.post("/products", async (req, res) => {
 });
 
 productsRouter.get("/products", async (req, res) => {
-  const { limit } = req.query;
+  const { limit = 10, page = 1, category, stock, sort } = req.query;
 
-  const products = await getProductsAdapter(limit);
-  res.status(200).json(products);
+  const options = { limit, page };
+  const queryCriteria = {};
+
+  if (sort) {
+    options.sort = { price: sort };
+  }
+  if (category) {
+    queryCriteria.category = category;
+  }
+
+  if (stock) {
+    queryCriteria.stock = stock;
+  }
+
+  const out = await test(queryCriteria, options);
+  const out2 = paginateResponseSuccess(out);
+  res.json(out2);
+  // res.json(out);
+
+  // const products = await getProductsAdapter(limit);
+  // res.status(200).json(products);
 });
 
 productsRouter.get("/products/:id", async (req, res) => {
