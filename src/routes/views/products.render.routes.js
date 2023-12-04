@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { test } from "../../dao/productAdapter.js";
 import { paginateResponseSuccess } from "../../class/response.js";
+import { autenticationFn } from "../out/autentication.js";
 
 const productsViewRouter = Router();
 
-productsViewRouter.get("/products", async (req, res) => {
+productsViewRouter.get("/products", autenticationFn, async (req, res) => {
   const { limit = 10, page = 1, category, stock, sort, cid } = req.query;
 
   const options = { limit, page };
