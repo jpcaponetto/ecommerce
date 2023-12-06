@@ -6,6 +6,7 @@ import {
   findEmail,
 } from "../dao/userAdapater.js";
 import bcrypt from "bcrypt";
+import { createCartAdapter } from "../dao/cartAdapter.js";
 
 const sessionsRouter = Router();
 sessionsRouter.post("/sessions/register", async (req, res) => {
@@ -16,7 +17,10 @@ sessionsRouter.post("/sessions/register", async (req, res) => {
   body.password = hash;
 
   try {
-    const user = await createUser(body);
+    const w = { products: [] };
+    const cart = await createCartAdapter(w);
+    const cartId = cart._id;
+    const user = await createUser(body, cartId);
     res.redirect("/login");
   } catch (error) {
     res.json(error.message);

@@ -8,8 +8,8 @@ const flagMongo = true;
 export const createCartAdapter = async (body) => {
   if (flagMongo) {
     try {
-      await cartSchema.create(body);
-      return;
+      const cart = await cartSchema.create(body);
+      return cart;
     } catch (error) {
       console.log(error.message);
       return;
