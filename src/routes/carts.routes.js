@@ -1,58 +1,80 @@
 import { Router } from "express";
+
 import CartManager from "../class/cartManager.js";
+import {
+  addArray,
+  addProductToCartAdapter,
+  createCartAdapter,
+  deleteAllProductToCartAdapter,
+  deleteProductToCartAdapter,
+  getCartByIdAdapter,
+  getCartPopulate,
+  getCartsAdapter,
+} from "../dao/cartAdapter.js";
+import cartSchema from "../dao/models/cart.model.js";
 
 const cartManager = new CartManager();
 const cartsRouter = Router();
 
 cartsRouter.post("/carts", async (req, res) => {
-  const carts = await cartManager.create();
-  if (carts === 0) {
-    res.status(404).json({ message: "File could not be read" });
-  } else {
-    res.status(201).json({ message: "Cart created" });
-  }
+  const body = { products: [] };
+  await createCartAdapter(body);
+  res.json({ ok: true });
 });
 
 cartsRouter.post("/carts/:cid/:pid", async (req, res) => {
   const { cid, pid } = req.params;
-  const cart = await cartManager.addProductCart(cid, pid);
-  if (cart === 0) {
-    res.status(404).json({ message: `No cart exists with id ${cid}` });
-  } else {
-    res
-      .status(201)
-      .json({ message: `Product has been added to cart`, cartID: cid });
+  const { quantity } = req.body;
+  try {
+    const cart = await addProductToCartAdapter(cid, pid, parseInt(quantity));
+  } catch (error) {}
+
+  res.json({ ok: true });
+});
+
+cartsRouter.delete("/carts/:cid/:pid", async (req, res) => {
+  const { cid, pid } = req.params;
+
+  try {
+    const c = await deleteProductToCartAdapter(cid, pid);
+    res.json(c);
+  } catch (error) {
+    res.json(error.message);
+  }
+});
+
+cartsRouter.put("/carts/:cid", async (req, res) => {
+  const { products } = req.body;
+  const { cid } = req.params;
+
+  try {
+    const w = await addArray(cid, products);
+    res.json(w);
+  } catch (error) {}
+});
+
+cartsRouter.delete("/carts/:cid", async (req, res) => {
+  const { cid } = req.params;
+
+  try {
+    const c = await deleteAllProductToCartAdapter(cid);
+    res.json(c);
+  } catch (error) {
+    res.json(error.message);
   }
 });
 
 cartsRouter.get("/carts", async (req, res) => {
-  const carts = await cartManager.getCarts();
-  if (carts) {
-    res.status(200).json(carts);
-  } else {
-    res.status(404).json({ message: "File could not be read" });
-  }
+  const carts = await getCartsAdapter();
+  res.status(200).json(carts);
 });
 
 cartsRouter.get("/carts/:id", async (req, res) => {
   const { id } = req.params;
-
-  if (id) {
-    const cart = await cartManager.productsCart(id);
-
-    switch (cart) {
-      case 0:
-        res.status(404).json({ message: `No cart exists with id ${id}` });
-        break;
-      case 1:
-        res.status(404).json({ message: "File could not be read" });
-        break;
-      default:
-        res.status(200).json(cart);
-    }
-  } else {
-    res.status(400).json({ message: "No id was provided" });
-  }
+  try {
+    const cart = await getCartPopulate(id);
+    res.json(cart);
+  } catch (error) {}
 });
 
 export default cartsRouter;

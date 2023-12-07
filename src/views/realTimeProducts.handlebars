@@ -162,12 +162,12 @@
       </h3>
       <hr>
       <form id="form-delete">
-        <label for="id">
+        <label for="idProduct">
           Id Product
           <input
             type="text"
-            id="id"
-            name="id"
+            id="idProduct"
+            name="idProduct"
             placeholder="Id product"
             required
           />
@@ -177,12 +177,13 @@
     <div>
       <h3>Products</h3>
       <hr>
-      <div id="products-list" class="container"></div>
+      <div id="products-list-mongo" class="container"></div>
     </div>
     
   </div>
 
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="js/index.js"></script>
